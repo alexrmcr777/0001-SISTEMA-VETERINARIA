@@ -1,0 +1,82 @@
+<div class="duenos-container">
+    <div class="subtitle">
+        <h2>Gestión de Dueños</h2>
+        <a routerLink="crear" routerLinkActive="active">+ Crear dueño</a>
+    </div>
+
+    <div class="filter-wrapper">
+        <h3>Buscar por:</h3>
+        <form class="filter-form" (ngSubmit)="onFiltrar()">
+            <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" name="nombre" [(ngModel)]="filtros.nombre" (ngModelChange)="onFiltrar()" placeholder="Nombre del dueño" />
+            </div>
+
+            <div class="form-group">
+                <label>Teléfono</label>
+                <input type="text" name="telefono" [(ngModel)]="filtros.telefono" (ngModelChange)="onFiltrar()" placeholder="Teléfono" />
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="text" name="email" [(ngModel)]="filtros.email" (ngModelChange)="onFiltrar()" placeholder="Correo electrónico" />
+            </div>
+
+            <!-- filtro en tiempo real via ngModelChange -->
+        </form>
+    </div>
+
+    <div class="table-container">
+        @if (isLoading) {
+          <div class="loading-state">
+            <div class="loading-spinner"></div>
+            <p>Cargando dueños...</p>
+          </div>
+        } @else {
+        <table class="tabla">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                    <th>Email</th>
+                    <th>Dirección</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (dueno of duenos; track dueno.id_dueno) {
+                <tr>
+                    <td>{{ dueno.nombre }}</td>
+                    <td>{{ dueno.telefono }}</td>
+                    <td>{{ dueno.email }}</td>
+                    <td>{{ dueno.direccion }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-mascotas" [routerLink]="['/mascotas']" [queryParams]="{dueno: dueno.nombre}">
+                                Ver mascotas
+                            </button>
+                            <button class="btn-edit" [routerLink]="['editar', dueno.id_dueno]">
+                                Editar
+                            </button>
+                            <button class="btn-delete" (click)="eliminarDueno(dueno.id_dueno)">
+                                Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                } @empty {
+                <tr>
+                    <td colspan="5">
+                        <div class="empty-state-cell">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="48" height="48"><path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0zM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695z" clip-rule="evenodd"/></svg>
+                            <p>No se encontraron dueños</p>
+                            <a routerLink="crear">+ Registrar dueño</a>
+                        </div>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        }
+    </div>
+</div>
