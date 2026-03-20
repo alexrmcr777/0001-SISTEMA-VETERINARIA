@@ -1,0 +1,37 @@
+:root {
+  --primary: #7F00E0;
+  --primary-dark: #3A1655;
+  --primary-light: #9C3CE6;
+}
+
+* {
+  font-family: 'Inter', sans-serif;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* ── Validación inline global ── */
+.field-error {
+  color: #d32f2f;
+  font-size: 0.77rem;
+  font-weight: 500;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.field-error::before { content: '⚠ '; }
+
+/* ── input inválido resaltado ── */
+input.ng-invalid.ng-touched,
+select.ng-invalid.ng-touched,
+textarea.ng-invalid.ng-touched {
+  border-color: #d32f2f !important;
+  box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.12) !important;
+}
