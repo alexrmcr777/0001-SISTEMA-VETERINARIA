@@ -1,0 +1,11 @@
+{
+  "routes": {
+    "/": {},
+    "/citas": {},
+    "/citas/crear": {},
+    "/duenos": {},
+    "/duenos/crear": {},
+    "/mascotas": {},
+    "/mascotas/crear": {}
+  }
+}
