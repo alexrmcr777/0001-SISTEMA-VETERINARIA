@@ -1,0 +1,66 @@
+<div class="form-container">
+    <h2>Editar Cita</h2>
+
+    <form (ngSubmit)="actualizarCita()" #editForm="ngForm">
+        <div class="dropdowns">
+            <div class="form-group">
+                <label>Mascota</label>
+                <select name="mascota" [(ngModel)]="cita.mascota" required>
+                    <option value="" disabled>Seleccione una mascota</option>
+                    @for (m of mascotas; track m.id_mascota) {
+                    <option [value]="m.nombre">{{ m.nombre }}</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Veterinario</label>
+                <select name="veterinario" [(ngModel)]="cita.veterinario" required>
+                    <option value="" disabled>Seleccione un veterinario</option>
+                    @for (v of veterinarios; track v.id) {
+                    <option [value]="v.nombreCompleto">{{ v.nombreCompleto }}</option>
+                    }
+                    @if (veterinarios.length === 0) {
+                    <option value="" disabled>No hay veterinarios registrados</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Estado</label>
+                <select name="estado" [(ngModel)]="cita.estado" required>
+                    <option value="Programada">Programada</option>
+                    <option value="Confirmada">Confirmada (cliente llegó y pagó)</option>
+                    <option value="Atendida">Atendida</option>
+                    <option value="Cancelada">Cancelada</option>
+                    <option value="Reprogramada">Reprogramada</option>
+                    <option value="No asistió">No asistió</option>
+                </select>
+            </div>
+
+            <div class="form-group"> 
+                <label>Comentarios (Opcional)</label>
+                <textarea name="comentarios" [(ngModel)]="cita.comentarios"
+                    placeholder="Notas adicionales y consideraciones a tener en cuenta" rows="3">
+                </textarea>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label>Fecha</label>
+                <input type="date" name="fecha" [(ngModel)]="cita.fecha" required />
+            </div>
+
+            <div class="form-group">
+                <label>Hora</label>
+                <input type="time" name="hora" [(ngModel)]="cita.hora" required />
+            </div>
+        </div>
+
+        <div class="actions">
+            <button type="button" class="btn-cancel" routerLink="/citas">Cancelar</button>
+            <button type="submit" class="btn-save" [disabled]="!editForm.valid">Guardar Cambios</button>
+        </div>
+    </form>
+</div>

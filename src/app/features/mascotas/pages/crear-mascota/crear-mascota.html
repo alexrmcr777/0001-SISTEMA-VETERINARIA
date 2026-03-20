@@ -1,0 +1,145 @@
+<div class="form-container">
+    <h2>Registrar Nueva Mascota</h2>
+
+    <form (ngSubmit)="guardarMascota()" #mascotaForm="ngForm">
+
+        <!-- ── FOTO ── -->
+        <div class="foto-section">
+            <div class="foto-preview-wrap">
+                @if (fotoPreview) {
+                    <img [src]="fotoPreview" alt="Foto de la mascota" class="foto-preview" />
+                    <button type="button" class="btn-quitar-foto" (click)="quitarFoto()" title="Quitar foto">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                            <path fill-rule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                } @else {
+                    <div class="foto-placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="40" height="40">
+                            <path fill-rule="evenodd" d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>Sin foto</span>
+                    </div>
+                }
+            </div>
+            <div class="foto-upload-area">
+                <label class="btn-upload" for="fotoInput">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="17" height="17">
+                        <path fill-rule="evenodd" d="M11.47 2.47a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 0 1-1.06 1.06l-3.22-3.22V16.5a.75.75 0 0 1-1.5 0V4.81L8.03 8.03a.75.75 0 0 1-1.06-1.06l4.5-4.5zM3 15.75a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75z" clip-rule="evenodd"/>
+                    </svg>
+                    {{ fotoPreview ? 'Cambiar foto' : 'Subir foto' }}
+                </label>
+                <input id="fotoInput" type="file" accept="image/*" (change)="onFotoSeleccionada($event)" style="display:none" />
+                <p class="foto-hint">JPG, PNG o WEBP &bull; Máx. 2 MB</p>
+                @if (fotoError) { <p class="foto-error">{{ fotoError }}</p> }
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label>Nombre de la Mascota</label>
+                <input type="text" name="nombre" [(ngModel)]="nuevaMascota.nombre" #nombreCtrl="ngModel" placeholder="Ej. Bobby" required />
+                @if (nombreCtrl.invalid && (nombreCtrl.dirty || nombreCtrl.touched)) {
+                  <span class="field-error">El nombre es obligatorio</span>
+                }
+            </div>
+
+            <!-- DUEÑO con toggle Registrado / Nuevo -->
+            <div class="form-group">
+                <label>Dueño / Responsable</label>
+                <div class="toggle-group" style="margin-bottom:6px;">
+                    <button type="button" class="toggle-btn" [class.active]="modoDueno === 'registrado'"
+                        (click)="cambiarModoDueno('registrado')">Registrado</button>
+                    <button type="button" class="toggle-btn" [class.active]="modoDueno === 'nuevo'"
+                        (click)="cambiarModoDueno('nuevo')">Nuevo</button>
+                </div>
+                @if (modoDueno === 'registrado') {
+                <select name="dueno" [(ngModel)]="nuevaMascota.dueno" #duenoCtrl="ngModel"
+                    (ngModelChange)="onDuenoSelected($event)" required>
+                    <option value="" disabled selected>Seleccione un dueño registrado</option>
+                    @for (d of duenos; track d.id_dueno) {
+                    <option [value]="d.nombre">{{ d.nombre }} — {{ d.telefono }}</option>
+                    }
+                </select>
+                @if (duenoCtrl.invalid && (duenoCtrl.dirty || duenoCtrl.touched)) {
+                  <span class="field-error">El dueño es obligatorio</span>
+                }
+                } @else {
+                <input type="text" name="dueno" [(ngModel)]="nuevaMascota.dueno" #duenoCtrl="ngModel"
+                    placeholder="Nombre del dueño" required />
+                @if (duenoCtrl.invalid && (duenoCtrl.dirty || duenoCtrl.touched)) {
+                  <span class="field-error">El dueño es obligatorio</span>
+                }
+                }
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label>Especie</label>
+                <select name="especie" [(ngModel)]="nuevaMascota.especie" (ngModelChange)="onEspecieChange()">
+                    <option value="">— Selecciona —</option>
+                    <option value="Perro">Perro</option>
+                    <option value="Gato">Gato</option>
+                    <option value="Ave">Ave</option>
+                    <option value="Conejo">Conejo</option>
+                    <option value="Hamster">Hámster</option>
+                    <option value="Reptil">Reptil</option>
+                    <option value="Pez">Pez</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Raza</label>
+                @if (nuevaMascota.especie === 'Perro') {
+                <select name="raza" [(ngModel)]="nuevaMascota.raza">
+                    <option value="">— Selecciona —</option>
+                    <option>Labrador</option><option>Pastor Alemán</option><option>Golden Retriever</option>
+                    <option>Bulldog</option><option>Poodle</option><option>Beagle</option>
+                    <option>Chihuahua</option><option>Shih Tzu</option><option>Mestizo</option><option>Otro</option>
+                </select>
+                } @else if (nuevaMascota.especie === 'Gato') {
+                <select name="raza" [(ngModel)]="nuevaMascota.raza">
+                    <option value="">— Selecciona —</option>
+                    <option>Siamés</option><option>Persa</option><option>Maine Coon</option>
+                    <option>Ragdoll</option><option>Bengal</option><option>Mestizo</option><option>Otro</option>
+                </select>
+                } @else {
+                <input type="text" name="raza" [(ngModel)]="nuevaMascota.raza" placeholder="Ej. Labrador, Siamés…" />
+                }
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label>Teléfono de Contacto</label>
+                <input type="tel" name="telefono" [(ngModel)]="nuevaMascota.telefono" #telCtrl="ngModel" placeholder="Ej. 987654321" required />
+                @if (telCtrl.invalid && (telCtrl.dirty || telCtrl.touched)) {
+                  <span class="field-error">El teléfono es obligatorio</span>
+                }
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" [(ngModel)]="nuevaMascota.email" #emailCtrl="ngModel" placeholder="correo@ejemplo.com" required email />
+                @if (emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)) {
+                  @if (emailCtrl.errors?.['required']) { <span class="field-error">El email es obligatorio</span> }
+                  @else { <span class="field-error">Ingresa un email válido</span> }
+                }
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label>Fecha de Nacimiento <span style="color:#aaa;font-weight:400;">(Opcional)</span></label>
+                <input type="date" name="fecha_nacimiento" [(ngModel)]="nuevaMascota.fecha_nacimiento" />
+            </div>
+        </div>
+
+        <div class="actions">
+            <button type="button" class="btn-cancel" routerLink="/mascotas">Cancelar</button>
+            <button type="submit" class="btn-save" [disabled]="!mascotaForm.valid">Guardar Mascota</button>
+        </div>
+    </form>
+</div>

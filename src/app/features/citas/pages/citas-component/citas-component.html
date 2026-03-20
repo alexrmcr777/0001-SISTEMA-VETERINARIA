@@ -1,0 +1,116 @@
+<div class="citas-container">
+    <div class="subtitle">
+        <h2>Gestión de Citas</h2>
+        <a routerLink="crear" routerLinkActive="active">+ Crear cita</a>
+    </div>
+
+    <div class="filter-wrapper">
+        <h3>Buscar por:</h3>
+        <form class="filter-form" (ngSubmit)="onFiltrar()">
+            <div class="form-group">
+                <label>Mascota</label>
+                <input type="text" name="mascota" [(ngModel)]="filtros.mascota" (ngModelChange)="onFiltrar()" placeholder="Nombre de la mascota" />
+            </div>
+
+            <div class="form-group">
+                <label>Fecha</label>
+                <input type="date" name="fecha" [(ngModel)]="filtros.fecha" (ngModelChange)="onFiltrar()" />
+            </div>
+
+            <div class="form-group">
+                <label>Estado</label>
+                <select name="estado" [(ngModel)]="filtros.estado" (ngModelChange)="onFiltrar()">
+                    <option value="">Todos</option>
+                    <option value="Programada">Programada</option>
+                    <option value="Confirmada">Confirmada</option>
+                    <option value="Atendida">Atendida</option>
+                    <option value="Cancelada">Cancelada</option>
+                    <option value="Reprogramada">Reprogramada</option>
+                    <option value="No asistió">No asistió</option>
+                </select>
+            </div>
+
+            <!-- Filtrar en tiempo real via ngModelChange; botón oculto para submit semántico -->
+        </form>
+    </div>
+
+    <div class="table-container">
+        @if (isLoading) {
+          <div class="loading-state">
+            <div class="loading-spinner"></div>
+            <p>Cargando citas...</p>
+          </div>
+        } @else {
+        <table class="tabla">
+            <thead>
+                <tr>
+                    <th>Mascota</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Veterinario</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (cita of citas; track cita.id_cita) {
+                <tr>
+                    <td>{{ cita.mascota }}</td>
+                    <td>{{ cita.fecha | date:'dd/MM/yyyy' }}</td>
+                    <td>{{ cita.hora }}</td>
+                    <td>{{ cita.veterinario }}</td>
+                    <td><span class="estado-chip {{ estadoClass(cita.estado) }}">{{ cita.estado }}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            @if (isRecepcionista && cita.estado === 'Programada') {
+                              <button class="btn-confirmar" (click)="confirmarLlegada(cita.id_cita)">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 1 0-1.06-1.06l-3.75 3.75-1.5-1.5a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.06 0l4.06-4.5z" clip-rule="evenodd"/></svg>
+                                Confirmar llegada
+                              </button>
+                            }
+                            <button class="btn-edit" [routerLink]="['editar', cita.id_cita]">
+                                Editar
+                            </button>
+                            @if (cita.estado !== 'Atendida' && cita.estado !== 'Cancelada') {
+                              <button class="btn-reprogramar" (click)="iniciarReprogramar(cita)">
+                                Reprogramar
+                              </button>
+                              <button class="btn-cancelar" (click)="cancelarCita(cita.id_cita)">
+                                Cancelar
+                              </button>
+                            }
+                        </div>
+                    </td>
+                </tr>
+                @if (citaReprogramandoId === cita.id_cita) {
+                <tr class="reprogramar-row">
+                    <td colspan="6">
+                        <div class="reprogramar-form">
+                            <span class="reprogramar-label">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path fill-rule="evenodd" d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5z" clip-rule="evenodd"/></svg>
+                                Nueva fecha y hora para {{ cita.mascota }}:
+                            </span>
+                            <input type="date" [(ngModel)]="nuevaFechaRep" [name]="'fecha_rep_' + cita.id_cita" />
+                            <input type="time" [(ngModel)]="nuevaHoraRep" [name]="'hora_rep_' + cita.id_cita" />
+                            <button class="btn-confirmar-rep" type="button" (click)="confirmarReprogramar(cita)">Confirmar</button>
+                            <button class="btn-cancelar-rep" type="button" (click)="cerrarReprogramar()">Cancelar</button>
+                        </div>
+                    </td>
+                </tr>
+                }
+                } @empty {
+                <tr>
+                    <td colspan="6">
+                        <div class="empty-state-cell">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="48" height="48"><path fill-rule="evenodd" d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5z" clip-rule="evenodd"/></svg>
+                            <p>No se encontraron citas</p>
+                            <a routerLink="crear">+ Registrar cita</a>
+                        </div>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        }
+    </div>
+</div>

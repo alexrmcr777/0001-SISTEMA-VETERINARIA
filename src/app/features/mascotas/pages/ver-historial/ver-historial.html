@@ -1,0 +1,114 @@
+<div class="historial-container">
+    @if (mascota) {
+        <div class="mascota-card">
+            <div class="mascota-header">
+                @if (mascota.foto) {
+                    <img [src]="mascota.foto" class="historial-foto" alt="Foto de {{ mascota.nombre }}" />
+                } @else {
+                    <div class="historial-foto-placeholder">
+                        <span>🐾</span>
+                    </div>
+                }
+                <div class="mascota-info">
+                    <h2>Historial Clínico: {{ mascota.nombre }}</h2>
+                    @if (mascota.especie || mascota.raza) {
+                        <p class="especie-raza">{{ mascota.especie }}{{ mascota.raza ? ' · ' + mascota.raza : '' }}</p>
+                    }
+                    <div class="info-grid">
+                        <p><strong>Dueño:</strong> {{ mascota.dueno }}</p>
+                        <p><strong>Teléfono:</strong> {{ mascota.telefono }}</p>
+                        <p><strong>Email:</strong> {{ mascota.email }}</p>
+                        @if (mascota.fecha_nacimiento) {
+                        <p><strong>Edad:</strong> {{ calcularEdad(mascota.fecha_nacimiento) }}</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="citas-historial">
+    <h3>Registro de Citas</h3>
+
+    @if (mascota && citasFiltradas.length > 0) {
+        <div class="timeline">
+            @for (cita of citasFiltradas; track cita.id_cita) {
+                <div class="timeline-item" [ngClass]="cita.estado.toLowerCase()">
+                    <div class="date-badge">
+                        <span class="day">{{ cita.fecha | date:'dd' }}</span>
+                        <span class="month">{{ cita.fecha | date:'MMM' }}</span>
+                    </div>
+                    <div class="cita-content">
+                        <h4>{{ cita.estado }}</h4>
+                        @if (cita.motivo) {
+                            <p><strong>Motivo:</strong> {{ cita.motivo }}</p>
+                        }
+                        <p><strong>Veterinario:</strong> {{ cita.veterinario }}</p>
+                        <p><strong>Hora:</strong> {{ cita.hora }}</p>
+                        
+                        @if (cita.comentarios) {
+                            <p class="comentarios">
+                                <em>"{{ cita.comentarios }}"</em>
+                            </p>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    } @else if (mascota && citasFiltradas.length === 0) {
+        <div class="no-data">
+            <p>No hay registros para {{ mascota.nombre }}.</p>
+        </div>
+    } @else {
+        <p>Cargando historial...</p>
+    }
+</div>
+
+    <!-- ── HISTORIAL CLÍNICO (consultas) ── -->
+    <div class="citas-historial">
+    <h3>Consultas clínicas</h3>
+
+    @if (consultasFiltradas.length > 0) {
+        <div class="timeline">
+            @for (c of consultasFiltradas; track c.id_consulta) {
+                <div class="timeline-item consulta-item">
+                    <div class="date-badge consulta-badge">
+                        <span class="day">{{ c.fecha | date:'dd' }}</span>
+                        <span class="month">{{ c.fecha | date:'MMM' }}</span>
+                    </div>
+                    <div class="cita-content">
+                        <h4>{{ c.motivo_consulta }}</h4>
+                        <p><strong>Veterinario:</strong> Dr. {{ c.nombre_veterinario }}</p>
+                        <p><strong>Diagnóstico:</strong> {{ c.diagnostico }}</p>
+                        @if (c.tratamiento) {
+                            <p><strong>Tratamiento:</strong> {{ c.tratamiento }}</p>
+                        }
+                        @if (c.medicamentos) {
+                            <p><strong>Medicamentos:</strong> {{ c.medicamentos }}</p>
+                        }
+                        @if (c.peso_kg || c.temperatura_c) {
+                            <div class="vitals-chips">
+                                @if (c.peso_kg) { <span class="v-chip">{{ c.peso_kg }} kg</span> }
+                                @if (c.temperatura_c) { <span class="v-chip">{{ c.temperatura_c }} °C</span> }
+                                @if (c.frecuencia_cardiaca) { <span class="v-chip">{{ c.frecuencia_cardiaca }} bpm</span> }
+                                @if (c.frecuencia_respiratoria) { <span class="v-chip">{{ c.frecuencia_respiratoria }} rpm</span> }
+                            </div>
+                        }
+                        @if (c.proxima_cita) {
+                            <p class="proxima">📅 Próxima cita: {{ c.proxima_cita | date:'dd/MM/yyyy' }}</p>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    } @else {
+        <div class="no-data">
+            <p>No hay consultas clínicas registradas para {{ mascota?.nombre }}.</p>
+        </div>
+    }
+    </div>
+
+    <div class="actions">
+        <button class="btn-back" routerLink="/mascotas">Volver a Mascotas</button>
+    </div>
+</div>
