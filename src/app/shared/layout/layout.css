@@ -1,0 +1,57 @@
+.container-fluid {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.layout {
+    display: flex;
+    flex-direction: column;
+    flex: 1; 
+}
+
+.body {
+    display: flex;
+    flex-direction: row;
+    flex: 1; 
+}
+
+app-nav-bar {
+    width: 200px;
+    flex-shrink: 0;
+}
+
+.content {
+    flex: 1;
+    min-width: 0; /* prevent flex children from overflowing */
+    overflow-x: hidden;
+}
+
+/* Responsive tables — allow horizontal scroll on small screens */
+.content :deep(table) {
+    min-width: 600px;
+}
+
+.content :deep(.table-container),
+.content :deep(.table-wrapper) {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media screen and (min-width: 768px) {
+    .body {
+        display: flex;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    app-nav-bar {
+        /* Keep host element in DOM for hamburger button — nav itself slides in */
+        width: 0;
+        overflow: visible;
+    }
+    .content {
+        padding: 0;
+        padding-top: 52px; /* space for hamburger button */
+    }
+}

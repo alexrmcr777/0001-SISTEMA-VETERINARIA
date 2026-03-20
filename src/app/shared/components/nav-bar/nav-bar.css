@@ -1,0 +1,182 @@
+/* ── Hamburger button (mobile only) ── */
+.hamburger {
+  display: none;
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 200;
+  background: #7F00E0;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  flex-direction: column;
+  gap: 5px;
+}
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #fff;
+  border-radius: 2px;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+/* Overlay behind open mobile nav */
+.nav-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 99;
+}
+
+.navBar {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 40px;
+    background-color: #7F00E0;
+    color: white;
+    height: 100%;
+}
+
+.navBar-logo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 1rem;
+}
+
+img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    clip-path: circle(50%);
+}
+
+.logo-photo {
+    border: 2.5px solid rgba(255, 255, 255, 0.55);
+    box-shadow: 0 0 0 3px rgba(127, 0, 224, 0.35);
+}
+
+.navBar-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+}
+
+.navBar-links a {
+    margin: 10px 0 10px;
+    width: 100%;
+    padding: 15px;
+    box-sizing: border-box;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+}
+
+.navBar-links a:hover {
+    background-color: #9C3CE6;;
+}
+
+.navBar-links a.active {
+    background-color: #3A1655;
+    font-weight: 700;
+    border-left: 4px solid rgba(255,255,255,0.7);
+}
+
+.navBar-links a:active {
+    background-color: #3A1655;;
+}
+
+@media screen and (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+  .nav-overlay {
+    display: block;
+  }
+  .navBar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100dvh;
+    width: 240px;
+    z-index: 100;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    overflow-y: auto;
+  }
+  .navBar.nav-open {
+    transform: translateX(0);
+  }
+}
+
+/* ── User area ── */
+.navBar-user {
+  margin-top: auto;
+  padding: 0 12px 28px;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 8px 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.user-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: white;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btn-logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  padding: 10px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 10px;
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s;
+}
+
+.btn-logout:hover { background: rgba(255,255,255,0.24); }
